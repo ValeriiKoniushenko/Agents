@@ -5,6 +5,13 @@
 # per shared skill in <host>/.agents/skills, so project-local skills can coexist
 # with the shared set.
 
+# This installer belongs to the host root project. If the Agents repository is added as
+# a CMake subdirectory, it is library content rather than the host's skill installer.
+if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    message(STATUS "[Agents] Skipping shared-skill installer outside the root project.")
+    return()
+endif()
+
 include_guard(GLOBAL)
 
 if(CMAKE_VERSION VERSION_LESS "3.20")
