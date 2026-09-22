@@ -158,6 +158,25 @@ elseif(NOT EXISTS "${_agents_link_directory}")
     endif()
 endif()
 
+# Remove broken skill links left behind when a shared skill is deleted or renamed.
+file(GLOB _agents_existing_skill_entries LIST_DIRECTORIES true
+    "${_agents_link_directory}/*"
+)
+list(SORT _agents_existing_skill_entries)
+
+foreach(_agents_existing_skill_entry IN LISTS _agents_existing_skill_entries)
+    if(IS_SYMLINK "${_agents_existing_skill_entry}" AND
+       NOT EXISTS "${_agents_existing_skill_entry}")
+        file(REMOVE "${_agents_existing_skill_entry}")
+        if(IS_SYMLINK "${_agents_existing_skill_entry}")
+            message(FATAL_ERROR
+                "[Agents] Failed to remove invalid skill link: ${_agents_existing_skill_entry}"
+            )
+        endif()
+        message(STATUS "[Agents] Removed invalid skill link: ${_agents_existing_skill_entry}")
+    endif()
+endforeach()
+
 file(GLOB _agents_skill_entries LIST_DIRECTORIES true RELATIVE "${_agents_shared_skills_dir}"
     "${_agents_shared_skills_dir}/*"
 )
