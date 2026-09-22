@@ -78,6 +78,44 @@ ENV CCACHE_COMPRESS=true
 ENV CCACHE_SLOPPINESS=include_file_mtime,include_file_ctime,time_macros,locale
 ```
 
+And of course it has the Gitea runner file `docker/gitea-runner/runner/config.yaml`:
+```yaml
+log:
+  level: info
+
+runner:
+  file: .runner
+  capacity: 4
+  envs: {}
+  env_file: ""
+  timeout: 3h
+  insecure: false
+  fetch_timeout: 5s
+  fetch_interval: 1s
+  labels: []
+
+cache:
+  enabled: true
+  dir: ""
+  host: ""
+  port: 0
+
+container:
+  network: ""
+  privileged: false
+  options: ""
+  workdir_parent: ""
+  valid_volumes:
+    - /srv/ci-cache/ccache
+    - /srv/ci-cache/git-repo
+    - /srv/ci-cache/build-cache
+  docker_host: ""
+  force_pull: false
+
+host:
+  workdir_parent: ""
+```
+
 ## WORKDIR /workspace
 
 So, try to align the original request with availability of the dockerfile. If something doesn't work, but expected that it should work, ask user for the last version of the Dockerfile. Sometimes, the dockerfile can be changed.
@@ -88,3 +126,4 @@ So, try to align the original request with availability of the dockerfile. If so
 - After changing everything that the user asked, you should update the bottom **Platform status** section in `docs/<project_name>/modules/ROOT/pages/installation.adoc` to match actual platforms, compilers, configurations, and checks. BUT, you shouldn't make it every step. Because CI imrovement's it's an iterative process. So, when you feel that you finished all tasks that were originally outlined - just remind the user to ask you to update the `installation.adoc`
 - Validate workflow syntax and apply the `docs-generation` skill to the documentation update, including its site build.
 - Gitea is hosted on the self-hosted machine. It has hardware limitations with number of cores and RAM. So, the **maximum core per one task/job is only 4 cores**.
+- When something unclear for you, or you are not sure in the some server/runner/gitea/etc configuration - you must ask the user about some clarifications.
